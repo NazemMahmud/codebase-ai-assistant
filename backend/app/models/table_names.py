@@ -9,3 +9,4 @@ And must stay decoupled from evolving app code.
 class TableName:
     CODEBASES = "codebases"
     CHUNKS = "chunks"
+    ERROR_LOGS = "error_logs"

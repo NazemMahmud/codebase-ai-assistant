@@ -17,3 +17,8 @@ class SymbolType(str, Enum):
     CLASS = "class"
     METHOD = "method"
     MODULE = "module"
+
+
+class ErrorLevel(str, Enum):
+    ERROR = "error"
+    CRITICAL = "critical"
