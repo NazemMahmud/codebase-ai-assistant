@@ -1,0 +1,24 @@
+# PyCharm/IDE-only override — optional, not needed to run the app.
+#
+# Adds a ports-less `api-ide` service so a Docker Compose remote interpreter
+# never binds host port 8000 and can coexist with the running `api` container.
+# (Compose concatenates `ports` across files, so ports can't be removed via an
+# override — a separate service is the clean way to have none.)
+#
+# Use with BOTH files and select the `api-ide` service in PyCharm:
+#   docker-compose.yml + docker-compose.ide.yml  ->  service: api-ide
+services:
+  api-ide:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-app}@db:5432/${POSTGRES_DB:-codedoc}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+    command: ["sleep", "infinity"]  # stay idle; the IDE just execs python3 in here

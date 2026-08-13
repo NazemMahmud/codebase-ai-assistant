@@ -1,7 +1,7 @@
 services:
   db:
     image: pgvector/pgvector:pg16
-    container_name: AC_DB_POSTGRES
+    container_name: CA_DB_POSTGRES
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
@@ -20,17 +20,18 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+    container_name: CA_API
     command: >
       uvicorn app.main:app
       --host 0.0.0.0
-      --port 8000
+      --port ${API_PORT:-8000}
       --reload
     env_file:
       - .env
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-app}@db:5432/${POSTGRES_DB:-codedoc}
     ports:
-      - "8000:8000"
+      - "${API_PORT:-8000}:${API_PORT:-8000}"
     depends_on:
       db:
         condition: service_healthy
