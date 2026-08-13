@@ -11,8 +11,8 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+psycopg://app:app@localhost:5432/codedoc"
 
     # Embeddings — local sentence-transformers, no API key needed (ADR-003)
-    EMBEDDING_MODEL: str = "BAAI/bge-small-en-v1.5"
-    EMBED_DIMENSIONS: int = 384  # bge-small-en-v1.5 = 384
+    EMBEDDING_MODEL: str = "jinaai/jina-embeddings-v2-base-code"
+    EMBED_DIMENSIONS: int = 768  # jina-embeddings-v2-base-code = 768
 
     # LLM generation — model-agnostic, BYOK (ADR-004)
     LLM_PROVIDER: str = "openrouter"

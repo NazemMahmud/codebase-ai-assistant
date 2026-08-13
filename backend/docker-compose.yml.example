@@ -22,11 +22,10 @@ services:
       dockerfile: docker/Dockerfile
     container_name: CA_API
     command: >
-      sh -c "alembic upgrade head &&
       uvicorn app.main:app
       --host 0.0.0.0
       --port ${API_PORT:-8000}
-      --reload"
+      --reload
     env_file:
       - .env
     environment:

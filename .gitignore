@@ -3,4 +3,5 @@
 .DS_Store
 **/.DS_Store
 
-docs
+__pycache__
+**/__pycache__

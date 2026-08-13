@@ -1,5 +1,6 @@
 # Python
 __pycache__/
+**/__pycache__
 build/
 dist/
 
@@ -32,3 +33,4 @@ htmlcov/
 # Local data
 *.log
 tmp/
+docs
