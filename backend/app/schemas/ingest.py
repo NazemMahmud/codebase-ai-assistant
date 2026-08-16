@@ -6,5 +6,7 @@ class IngestRequest(BaseModel):
 
 
 class IngestResult(BaseModel):
-    repo_id: str
+    codebase_id: str
     status: str
+    file_count: int
+    chunk_count: int
