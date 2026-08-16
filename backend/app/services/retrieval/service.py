@@ -41,8 +41,11 @@ def retrieve(
 
 def _load_chunks(session: Session, ids: list[uuid.UUID]) -> list[Chunk]:
     """Load chunks by id, preserving the fused order (SQL `IN` doesn't)."""
+
     if not ids:
         return []
-    rows = session.scalars(select(Chunk).where(Chunk.id.in_(ids))).all()
+
+    rows  = session.scalars(select(Chunk).where(Chunk.id.in_(ids))).all()
     by_id = {chunk.id: chunk for chunk in rows}
+
     return [by_id[cid] for cid in ids if cid in by_id]

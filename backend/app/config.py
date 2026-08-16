@@ -15,10 +15,13 @@ class Settings(BaseSettings):
     EMBED_DIMENSIONS: int = 768  # jina-embeddings-v2-base-code = 768
     EMBED_BATCH_SIZE: int = 32   # texts per encode() batch at ingest
 
-    # LLM generation — model-agnostic, BYOK (ADR-004)
+    # LLM generation — model-agnostic, BYOK
     LLM_PROVIDER: str = "openrouter"
     LLM_MODEL: str = ""
     LLM_API_KEY: str = ""
+    LLM_BASE_URL: str = "https://openrouter.ai/api/v1"
+    LLM_TIMEOUT: float = 60.0
+    LLM_TEMPERATURE: float = 0.1
 
     # Retrieval tuning (ADR-006)
     VECTOR_TOP_K: int = 50   # candidates from vector cosine search
