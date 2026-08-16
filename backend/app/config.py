@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     # Embeddings — local sentence-transformers, no API key needed (ADR-003)
     EMBEDDING_MODEL: str = "jinaai/jina-embeddings-v2-base-code"
     EMBED_DIMENSIONS: int = 768  # jina-embeddings-v2-base-code = 768
+    EMBED_BATCH_SIZE: int = 32   # texts per encode() batch at ingest
 
     # LLM generation — model-agnostic, BYOK (ADR-004)
     LLM_PROVIDER: str = "openrouter"

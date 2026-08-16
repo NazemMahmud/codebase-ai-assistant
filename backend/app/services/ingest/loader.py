@@ -1,6 +1,7 @@
 """Repository loader: validate a GitHub URL (SSRF-safe), shallow-clone it, and
 walk + filter the files. No code is ever executed — files are only read.
 """
+
 from __future__ import annotations
 
 import ipaddress
@@ -16,6 +17,11 @@ from git import Repo
 from git.exc import GitCommandError
 
 from app.config import settings
+from app.services.ingest.errors import (
+    RepoCloneError,
+    RepoLimitError,
+    RepoValidationError,
+)
 from app.services.ingest.constants import (
     ALLOWED_HOSTS,
     ALLOWED_SCHEMES,
@@ -38,18 +44,6 @@ from app.services.ingest.constants import (
     SSH_KEY_FILENAMES,
     TMP_DIR_PREFIX,
 )
-
-
-class RepoValidationError(ValueError):
-    """The URL is not an acceptable public GitHub repository."""
-
-
-class RepoCloneError(RuntimeError):
-    """git clone failed."""
-
-
-class RepoLimitError(RuntimeError):
-    """The repository exceeds the configured size/file-count limits."""
 
 
 @dataclass
@@ -133,31 +127,39 @@ def _is_ignored_file(name: str) -> bool:
 
 def _collect_files(root: Path) -> list[FileEntry]:
     files: list[FileEntry] = []
-    total_bytes = 0
+    total_bytes            = 0
+
     for dirpath, dirnames, filenames in os.walk(root, followlinks=False):
         # Prune ignored + symlinked dirs in place (don't descend / follow out of root).
         dirnames[:] = [
             d for d in dirnames
             if d not in IGNORED_DIRS and not os.path.islink(os.path.join(dirpath, d))
         ]
+
         for name in filenames:
             abs_path = Path(dirpath) / name
             if abs_path.is_symlink() or _is_ignored_file(name):
                 continue
+
             try:
                 size = abs_path.stat().st_size
             except OSError:
                 continue
+
             if size > settings.MAX_FILE_BYTES:
                 continue
+
             files.append(
                 FileEntry(path=abs_path.relative_to(root).as_posix(), abs_path=abs_path, size=size)
             )
+
             total_bytes += size
+
             if len(files) > settings.MAX_FILES:
                 raise RepoLimitError(MSG_FILE_LIMIT_EXCEEDED.format(limit=settings.MAX_FILES))
             if total_bytes > settings.MAX_REPO_MB * BYTES_PER_MB:
                 raise RepoLimitError(MSG_SIZE_LIMIT_EXCEEDED.format(limit=settings.MAX_REPO_MB))
+
     return files
 
 
@@ -168,6 +170,7 @@ def clone_and_collect(url: str) -> tuple[Path, list[FileEntry]]:
     RepoLimitError (temp dir is cleaned up before those propagate).
     """
     tmp_dir = Path(tempfile.mkdtemp(prefix=TMP_DIR_PREFIX))
+
     try:
         Repo.clone_from(url, str(tmp_dir), depth=1, single_branch=True) # branch='branchName', will decide it later
     except GitCommandError as exc:
@@ -179,4 +182,5 @@ def clone_and_collect(url: str) -> tuple[Path, list[FileEntry]]:
     except RepoLimitError:
         shutil.rmtree(tmp_dir, ignore_errors=True)
         raise
+
     return tmp_dir, files

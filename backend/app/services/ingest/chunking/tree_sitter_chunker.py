@@ -119,13 +119,15 @@ class TreeSitterChunker:
     ) -> ChunkPiece:
         """Build a ChunkPiece from a definition node: its source text, symbol name,
         type, and 1-indexed line span."""
-        name_node = node.child_by_field_name(NODE_NAME_FIELD)
+
+        name_node   = node.child_by_field_name(NODE_NAME_FIELD)
         symbol_name = (
             name_node.text.decode(TEXT_ENCODING) if name_node is not None else None
         )
         content = source_bytes[node.start_byte : node.end_byte].decode(
             TEXT_ENCODING, errors="ignore"
         )
+
         return ChunkPiece(
             content=content,
             language=language,
