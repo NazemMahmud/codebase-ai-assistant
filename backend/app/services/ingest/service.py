@@ -10,6 +10,7 @@ import logging
 import shutil
 from datetime import datetime, timezone
 
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.enums import CodebaseSource, CodebaseStatus
@@ -42,7 +43,7 @@ def ingest_repository(session: Session, repo_url: str) -> IngestResult:
     On any failure the codebase is marked failed and the error is logged.
     """
     url      = validate_repo_url(repo_url)
-    codebase = _create_indexing_codebase(session, url)
+    codebase = _prepare_codebase(session, url)
     tmp_dir  = None
 
     try:
@@ -68,6 +69,47 @@ def ingest_repository(session: Session, repo_url: str) -> IngestResult:
     )
 
 
+def _prepare_codebase(session: Session, url: str) -> Codebase:
+    """Reuse the existing codebase for this URL, or create one; set it to indexing.
+
+    Re-ingest is idempotent: instead of creating a duplicate, the same URL reuses its row
+    Old chunks aren't touched here.
+    they're soft-deleted in the same transaction as the new inserts (_index_files),
+    so a failed re-ingest leaves the previous index intact.
+    """
+    codebase = _find_codebase(session, url)
+    if codebase is None:
+        return _create_indexing_codebase(session, url)
+
+    codebase.status     = CodebaseStatus.INDEXING
+    codebase.indexed_at = None
+    session.commit()
+
+    return codebase
+
+
+def _find_codebase(session: Session, url: str) -> Codebase | None:
+    """Return the most recent non-deleted codebase for this URL, or None."""
+
+    stmt = (
+        select(Codebase)
+        .where(Codebase.location == url, Codebase.deleted_at.is_(None))
+        .order_by(Codebase.created_at.desc())
+    )
+
+    return session.scalars(stmt).first()
+
+
+def _soft_delete_chunks(session: Session, codebase_id) -> None:
+    """Mark this codebase's current chunks deleted (staged; commits with the new insert)."""
+
+    session.execute(
+        update(Chunk)
+        .where(Chunk.codebase_id == codebase_id, Chunk.deleted_at.is_(None))
+        .values(deleted_at=datetime.now(timezone.utc))
+    )
+
+
 def _create_indexing_codebase(session: Session, url: str) -> Codebase:
     """Insert a new codebase row and move it pending -> indexing.
 
@@ -89,6 +131,10 @@ def _index_files(session: Session, codebase: Codebase, files: list[FileEntry]) -
 
     Nothing is committed here — _mark_ready commits the chunks + ready status as one unit.
     """
+    # Replace any previous index for this codebase (atomic with the new insert
+    # at commit; a failure rolls this back too, keeping the old index).
+    _soft_delete_chunks(session, codebase.id)
+
     tagged = _chunk_files(files)
     if not tagged:
         return 0
