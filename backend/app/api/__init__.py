@@ -6,7 +6,6 @@ from app.api.ingest import router as ingest_router
 
 api_router = APIRouter(prefix="/api")
 api_router.include_router(health_router, tags=["health"])
-# will implement later
 api_router.include_router(ingest_router, tags=["ingest"])
 api_router.include_router(chat_router, tags=["chat"])
 
