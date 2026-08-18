@@ -97,6 +97,31 @@ It would not necessarily make the LLM itself faster, but it would make the appli
 
 This was mainly left out because of time.
 
+### Persist chat history
+
+Chat history is currently kept only in the frontend, in memory. It survives while the
+page is open but is lost on a refresh or when a different repository is selected.
+
+I would store conversations in the database — for example a `conversations` table and a
+`messages` table (role, content, citations, `codebase_id`, timestamp) — and load a
+repository's history when it is selected. History would then survive refreshes, server
+restarts, and different devices.
+
+### Support multi-turn conversation
+
+Each `/api/chat` call is currently independent: previous questions are not sent to the
+model, so it behaves as single-turn Q&A rather than a real chat. A follow-up like
+"and the second one?" cannot resolve, because neither the prompt nor the retrieval step
+sees the earlier turns.
+
+With stored history I would make the chat conversational:
+
+* include recent turns in the prompt so the model has context
+* use the history to rewrite the retrieval query (history-aware retrieval), so a
+  follow-up question is expanded with what the conversation was about before searching
+
+Persisting history (above) is the prerequisite for both.
+
 ## 4. Add incremental re-indexing
 
 Right now, re-indexing a repository means processing the whole repository again.

@@ -191,3 +191,15 @@ and known limitations, is available inside: `backend/docs/`.
 **Ingesting a repository**
 
 ![Ingesting a repository](docs/screenshots/03-ingesting-a-repo.jpeg)
+
+**Asking a question**
+
+![Asking a question](docs/screenshots/04-asking-a-question.png)
+
+**Answer with `file:line` citations**
+
+![First question answer](docs/screenshots/05-1st-ques-answer.png)
+
+**Follow-up question and answer**
+
+![Second question answer](docs/screenshots/06-2nd-ques-answer.png)
