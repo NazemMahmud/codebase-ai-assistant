@@ -185,6 +185,11 @@ curl http://localhost:8000/api/codebases/<uuid>
 Ask a question about one codebase.
 
 > This endpoint is also **synchronous** and does not currently support streaming.
+>
+> It is **stateless / single-turn**: each request is answered on its own, with no
+> memory of previous questions. Chat history is kept only in the frontend (in memory).
+> Persisting history and supporting multi-turn chat are documented next steps in
+> [what-id-do-differently.md](what-id-do-differently.md).
 
 ### Request body
 

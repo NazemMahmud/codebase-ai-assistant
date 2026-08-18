@@ -5,3 +5,6 @@
 
 __pycache__
 **/__pycache__
+
+# Private / non-public material (assignment brief, scratch notes)
+private/

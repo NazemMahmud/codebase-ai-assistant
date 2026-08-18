@@ -172,7 +172,7 @@ If you changed the backend port, also update `VITE_API_TARGET` in the frontend `
 | [Engineering standards](docs/engineering-standards.md)    | Engineering practices followed in the project and skipped                                          |
 | [AI usage](docs/ai-usage.md)                              | How AI tools were used during development                                                          |
 | [Productionization](docs/productionization.md)            | Ideas for scaling and deploying the project                                                        |
-| [What I'd do differently](docs/what-id-do-differently.md) | Improvements I would make with more time                                                           |
+| [Roadmap & limitations](docs/what-id-do-differently.md)   | Planned improvements and current known limitations                                                 |
 | [Troubleshooting](docs/troubleshooting.md)                | Common setup problems and solutions                                                                |
 
 More detailed backend documentation, including ingestion, retrieval, chat flow, database schema, embeddings, 
@@ -191,3 +191,15 @@ and known limitations, is available inside: `backend/docs/`.
 **Ingesting a repository**
 
 ![Ingesting a repository](docs/screenshots/03-ingesting-a-repo.jpeg)
+
+**Asking a question**
+
+![Asking a question](docs/screenshots/04-asking-a-question.png)
+
+**Answer with `file:line` citations**
+
+![First question answer](docs/screenshots/05-1st-ques-answer.png)
+
+**Follow-up question and answer**
+
+![Second question answer](docs/screenshots/06-2nd-ques-answer.png)
