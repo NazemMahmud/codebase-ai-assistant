@@ -13,4 +13,5 @@ tree-sitter-javascript==0.25.0
 tree-sitter-typescript==0.23.2
 sentence-transformers==5.7.0
 einops==0.8.2
+transformers>=4.41,<5   # jina v2 remote code needs a 4.x (removed API in transformers 5.x)
 httpx==0.28.1

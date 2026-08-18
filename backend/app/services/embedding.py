@@ -25,9 +25,15 @@ class Embedder:
             # Imported here so the app can boot without loading torch/the model.
             from sentence_transformers import SentenceTransformer
 
-            logger.info("Loading embedding model: %s", settings.EMBEDDING_MODEL)
+            logger.info(
+                "Loading embedding model: %s (device=%s)",
+                settings.EMBEDDING_MODEL,
+                settings.EMBED_DEVICE,
+            )
             self._model = SentenceTransformer(
-                settings.EMBEDDING_MODEL, trust_remote_code=True
+                settings.EMBEDDING_MODEL,
+                trust_remote_code=True,
+                device=settings.EMBED_DEVICE,
             )
 
         return self._model

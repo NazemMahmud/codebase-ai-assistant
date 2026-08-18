@@ -12,8 +12,9 @@ class Settings(BaseSettings):
 
     # Embeddings — local sentence-transformers, no API key needed (ADR-003)
     EMBEDDING_MODEL: str = "jinaai/jina-embeddings-v2-base-code"
-    EMBED_DIMENSIONS: int = 768  # jina-embeddings-v2-base-code = 768
-    EMBED_BATCH_SIZE: int = 32   # texts per encode() batch at ingest
+    EMBED_DIMENSIONS: int = 768  # jina-embeddings-v2-base-code = 768 (needs transformers<5)
+    EMBED_BATCH_SIZE: int = 8    # texts per encode() batch (small: avoids GPU/MPS OOM)
+    EMBED_DEVICE: str = "cpu"    # "cpu" (stable on Mac), "cuda", or "mps"
 
     # LLM generation — model-agnostic, BYOK
     LLM_PROVIDER: str = "openrouter"
