@@ -1,0 +1,65 @@
+{
+  "info": {
+    "name": "Code Documentation Assistant",
+    "description": "API for the Code Documentation Assistant. Set the `base_url` and `codebase_id` collection variables.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "codebase_id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base_url}}/api/health", "host": ["{{base_url}}"], "path": ["api", "health"] }
+      }
+    },
+    {
+      "name": "Codebase Repo Insertion",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"repo_url\": \"https://github.com/pallets/click\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/ingest", "host": ["{{base_url}}"], "path": ["api", "ingest"] }
+      }
+    },
+    {
+      "name": "List codebases",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base_url}}/api/codebases", "host": ["{{base_url}}"], "path": ["api", "codebases"] }
+      }
+    },
+    {
+      "name": "Get codebase",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/codebases/{{codebase_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "codebases", "{{codebase_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Chat",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"Where is authentication handled?\",\n  \"codebase_id\": \"{{codebase_id}}\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/chat", "host": ["{{base_url}}"], "path": ["api", "chat"] }
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+%% Implemented schema (PostgreSQL). Types use underscores because Mermaid's ERD
+%% grammar forbids parentheses/spaces (e.g. vector_768 = vector(768)).
+erDiagram
+    CODEBASES ||--o{ CHUNKS : "has"
+    CODEBASES ||--o{ ERROR_LOGS : "logged for (nullable)"
+
+    CODEBASES {
+        uuid        id PK "server default uuidv7()"
+        varchar_20  source        "github"
+        text        location      "repo url"
+        varchar_64  commit_sha    "nullable"
+        varchar_20  status        "pending|indexing|ready|failed"
+        int         chunk_count
+        timestamptz indexed_at    "nullable"
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at    "nullable (soft delete)"
+    }
+
+    CHUNKS {
+        uuid        id PK
+        uuid        codebase_id FK "-> codebases.id, cascade"
+        text        file_path
+        varchar_30  programming_language "nullable"
+        text        symbol_name   "nullable"
+        varchar_20  symbol_type   "nullable"
+        int         start_line
+        int         end_line
+        text        content
+        int         token_count   "nullable"
+        vector_768  embedding     "HNSW cosine index"
+        tsvector    content_tsv   "generated; GIN index"
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at    "nullable (soft delete)"
+    }
+
+    ERROR_LOGS {
+        uuid        id PK
+        uuid        codebase_id FK "-> codebases.id, set null"
+        varchar_20  level
+        varchar_255 source
+        varchar_255 error_type
+        text        message
+        jsonb       context       "traceback + extra"
+        timestamptz created_at
+    }

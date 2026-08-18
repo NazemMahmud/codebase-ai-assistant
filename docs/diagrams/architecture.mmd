@@ -1,0 +1,29 @@
+flowchart LR
+    UI[React UI] -->|/ingest, /codebases, /chat| API[FastAPI]
+
+    subgraph Ingestion
+        LOAD[Loader<br/>clone + filter] --> CH[Chunker<br/>tree-sitter + fallback]
+        CH --> EMB[Embedder<br/>local sentence-transformers]
+    end
+
+    subgraph Storage[Postgres + pgvector]
+        CB[(codebases)]
+        CK[(chunks<br/>embedding + tsvector)]
+        EL[(error_logs)]
+    end
+
+    subgraph Retrieval
+        VEC[Vector<br/>pgvector cosine] & FTS[Full-text<br/>tsvector] & TRG[Trigram<br/>pg_trgm] --> RRF[Reciprocal Rank Fusion]
+    end
+
+    subgraph Generation
+        CTX[Context assembly<br/>token budget + citations] --> LLM[LLM provider<br/>OpenRouter, BYOK]
+    end
+
+    API --> LOAD
+    EMB --> CK
+    LOAD --> CB
+    API --> Retrieval
+    CK --> VEC & FTS & TRG
+    RRF --> CTX
+    LLM --> API
