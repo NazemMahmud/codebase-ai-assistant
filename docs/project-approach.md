@@ -1,10 +1,8 @@
 # Project Approach
 
-## Why I chose this option
+## Why I built this
 
-There were four options, and all of them involved some kind of retrieval problem.
-
-I chose this project because working with source code creates a few extra challenges that are interesting to solve.
+I wanted a project where working with source code creates a few extra challenges that are interesting to solve.
 
 For example:
 
@@ -13,7 +11,7 @@ For example:
 * search also needs to find exact names such as functions, classes, and variables
 * answers should point back to the correct file and line numbers
 
-Because of that, this option gave me a good chance to focus on both normal backend engineering and RAG-specific decisions.
+That mix gave me a good chance to focus on both normal backend engineering and RAG-specific decisions.
 
 ## Main idea
 
@@ -468,7 +466,7 @@ That would make it possible to compare changes to:
 
 using real numbers instead of only manually checking whether the results look good.
 
-This is the first improvement I would focus on with more time.
+This is the first improvement I would focus on next.
 
 See:
 

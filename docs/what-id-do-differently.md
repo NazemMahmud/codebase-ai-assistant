@@ -1,8 +1,8 @@
-# What I'd Do With More Time
+# Roadmap and Known Limitations
 
-If I had more time, these are the main improvements I would work on next.
+The main improvements planned next, along with the current limitations behind them.
 
-I have listed them roughly in order of value.
+They are listed roughly in order of value.
 
 ## 1. Measure retrieval quality properly
 

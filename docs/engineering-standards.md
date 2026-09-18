@@ -288,7 +288,7 @@ Hit Rate@K
 MRR
 ```
 
-This was not completed in the current time box.
+This has not been built yet.
 
 It would be one of the first things I would add next because it would make retrieval improvements measurable instead of relying only on manual checking.
 
